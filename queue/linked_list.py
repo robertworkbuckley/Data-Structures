@@ -4,14 +4,13 @@ class Node:
     Stores two pieces of data:
     1. The Value
     2. The Next Node
-​
+
     Methods/Behavior/Operations:
     1. Get value
     2. Set value
     3. Get next
     4. Set next
     """
-
     def __init__(self, value=None, next_node=None):
         # the value at this linked list node
         self.value = value
@@ -34,7 +33,7 @@ class LinkedList:
     Data:
     1. A reference to the head Node
     2. A reference to the tail Node
-​
+
     Behavior/Methods:
     1. Add To Tail
     2. Prepend (Add a new node and point that Node's next_node at the old Head; update Head pointer)
@@ -43,7 +42,6 @@ class LinkedList:
     5. Contains?
     6. Get Maximum?
     """
-
     def __init__(self):
         # reference to the head of the list
         self.head = None
@@ -88,23 +86,27 @@ class LinkedList:
     def remove_tail(self):
         if not self.head:
             return None
-
+        
         if self.head is self.tail:
             value = self.head.get_value()
             self.head = None
             self.tail = None
             return value
-
+        
         current = self.head
+
         while current.get_next() is not self.tail:
             current = current.get_next()
+
         value = self.tail.get_value()
         self.tail = current
+        self.tail.set_next(None)
         return value
 
     def contains(self, value):
         if not self.head:
             return False
+
         # Recursive solution
         # def search(node):
         #   if node.get_value() == value:
@@ -113,10 +115,10 @@ class LinkedList:
         #     return False
         #   return search(node.get_next())
         # return search(self.head)
-
+    
         # get a reference to the node we're currently at; update this as we traverse the list
         current = self.head
-        # check to see if we're at a valid node
+        # check to see if we're at a valid node 
         while current:
             # return True if the current value we're looking at matches our target value
             if current.get_value() == value:
@@ -142,3 +144,4 @@ class LinkedList:
             # update the current node to the next node in the list
             current = current.get_next()
         return max_value
+
