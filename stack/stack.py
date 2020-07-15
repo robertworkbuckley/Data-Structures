@@ -14,6 +14,9 @@ return elements in Last In First Out order.
    Make sure the Stack tests pass.
 3. What is the difference between using an array vs. a linked list when 
    implementing a Stack?
+   A: The array is not as efficient for a stack because the array is a declared size. 
+   So when you run out of room it has to double its size to make room. Linked list never has to
+   do anything but add a new node.
 """
 
 # 1.

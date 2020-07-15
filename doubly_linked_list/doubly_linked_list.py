@@ -195,11 +195,59 @@ class DoublyLinkedList:
     order of the other elements of the List.
     """
     def delete(self, node):
-        pass
+        if len(self) == 1:
+            self.head = None
+            self.tail = None
+            self.length = 0
+        elif len(self) == 2:
+            if node == self.head:
+                new_head = self.tail
+                # new_head.prev = None
+                new_head.next, new_head.prev = None, None
+                self.head = new_head
+                self.tail = new_head
+            elif node == self.tail:
+                new_tail = self.head
+                new_tail.next = None
+                self.tail = new_tail
+                self.head = new_tail
+            self.length -= 1
+
+        else:
+            if node == self.head:
+                new_head = self.head.next
+                new_head.prev = None
+                self.head = new_head
+            elif node == self.tail:
+                new_tail = self.tail.prev
+                new_tail.next = None
+                self.tail = new_tail
+            else:
+                #change pointers of nodes from both sides of the node being deleted, to now
+                #point at each other, removing all reference of deleted node.
+                node.prev.next, node.next.prev = node.next, node.prev
+            self.length -= 1
+
 
     """
     Finds and returns the maximum value of all the nodes 
     in the List.
     """
     def get_max(self):
-        pass
+        current_node = self.head
+        values = []
+
+        while current_node is not None:
+            values.append(current_node.value)
+
+            current_node = current_node.next
+        return max(values)
+
+
+ll = DoublyLinkedList()
+ll.add_to_head(9)
+ll.add_to_head(8)
+ll.add_to_head(7)
+ll.delete(ll.head)
+ll.delete(ll.head)
+# ll.add_to_head(6)
