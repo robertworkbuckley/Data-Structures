@@ -32,28 +32,39 @@ class DoublyLinkedList:
     the old head node's previous pointer accordingly.
     """
 
-    def add_to_head(self, value):
-        # create instance of ListNode with value
-        # node = ListNode(value)
-        if not self.head:
-            node = ListNode(value)
-            self.head = node
-            self.tail = node
-            self.length = 1
-        elif self.head == self.tail:
-            old_head = self.head
-            # new_node = ListNode(value, prev=None, next=old_head)
-            # old_head.prev = new_node
+    # def add_to_head(self, value):
+    #     # create instance of ListNode with value
+    #     # node = ListNode(value)
+    #     if not self.head:
+    #         node = ListNode(value)
+    #         self.head = node
+    #         self.tail = node
+    #         self.length = 1
+    #     elif self.head == self.tail:
+    #         old_head = self.head
+    #         # new_node = ListNode(value, prev=None, next=old_head)
+    #         # old_head.prev = new_node
 
-            self.head = ListNode(value, prev=None, next=old_head)
-            old_head.prev = self.head
-            self.tail = old_head
+    #         self.head = ListNode(value, prev=None, next=old_head)
+    #         old_head.prev = self.head
+    #         self.tail = old_head
+    #         self.length += 1
+    #     else:
+    #         old_head = self.head
+    #         self.head = ListNode(value, prev=None, next=self.head)
+    #         old_head.prev = self.head
+    #         self.length += 1
+
+    def add_to_head(self, value):
+        new_head = ListNode(value=value, next=self.head)
+        if self.head == None:
+            self.head = new_head
+            self.tail = new_head
             self.length += 1
-        else:
-            old_head = self.head
-            self.head = ListNode(value, prev=None, next=self.head)
-            old_head.prev = self.head
-            self.length += 1
+            return None
+        self.head.prev = new_head
+        self.head = new_head
+        self.length += 1
 
     """
     Removes the List's current head node, making the
