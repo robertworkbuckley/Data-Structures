@@ -59,21 +59,33 @@ class BSTNode:
     def get_max(self):
         # forget about the left subtree
         # iterate through the nodes using a loop construct
-        pass
+        value = self.value
+        current_node = self.right
+        while current_node is not None:
+            value = current_node.value
+            current_node = current_node.right
+
+        return value
+
 
     # Call the function `fn` on the value of each node
     def for_each(self, fn):
-       # recusive solution
+       # recursive solution
+        if self.value:
+            fn(self.value)
+            if self.left:
+                self.left.for_each(fn)
+            if self.right:
+                self.right.for_each(fn)
 
-        #
-        pass
+        
 
     # Part 2 -----------------------
 
     # Print all the values in order from low to high
     # Hint:  Use a recursive, depth first traversal
     def in_order_print(self, node):
-        pass
+        list
 
     # Print the value of every node, starting with the given node,
     # in an iterative breadth first traversal
@@ -95,3 +107,9 @@ class BSTNode:
     # Print Post-order recursive DFT
     def post_order_dft(self, node):
         pass
+
+bs = BSTNode(3)
+bs.insert(5)
+bs.insert(2)
+bs.insert(89)
+bs.insert(22)
