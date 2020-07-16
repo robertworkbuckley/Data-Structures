@@ -10,6 +10,11 @@ class ListNode:
         self.value = value
         self.next = next
 
+    def delete(self):
+        if self.prev:
+            self.prev.next = self.next
+        if self.next:
+            self.next.prev = self.prev
 
 """
 Our doubly-linked list class. It holds references to 
@@ -33,27 +38,19 @@ class DoublyLinkedList:
     """
 
     def add_to_head(self, value):
-        # create instance of ListNode with value
-        # node = ListNode(value)
+
+        new_node = ListNode(value)
+        self.length += 1
+        # if no head exists, new node created will become head and tail
         if not self.head:
-            node = ListNode(value)
             self.head = node
             self.tail = node
-            self.length = 1
-        elif self.head == self.tail:
-            old_head = self.head
-            # new_node = ListNode(value, prev=None, next=old_head)
-            # old_head.prev = new_node
-
-            self.head = ListNode(value, prev=None, next=old_head)
-            old_head.prev = self.head
-            self.tail = old_head
-            self.length += 1
+        # new node will point to old head, with old head pointing to new node that
+        #is now the new head
         else:
-            old_head = self.head
-            self.head = ListNode(value, prev=None, next=self.head)
-            old_head.prev = self.head
-            self.length += 1
+            new_node.next = self.head
+            self.head.prev =new_node
+            self.head = new_node
 
     """
     Removes the List's current head node, making the
@@ -74,7 +71,7 @@ class DoublyLinkedList:
             return head.value
 
         value = self.head.value
-        self.head = self.head.next
+        self.delete(self.head)
         self.length -= 1
         return value
 
@@ -245,3 +242,10 @@ class DoublyLinkedList:
 
             current_node = current_node.next
         return max(values)
+
+
+dl = DoublyLinkedList()
+dl.add_to_head(9)
+dl.add_to_head(18)
+dl.add_to_head(3)
+dl.add_to_head(7)

@@ -10,6 +10,20 @@ class ListNode:
         self.value = value
         self.next = next
 
+    # $%$Start
+    """
+    Optional `delete` method on `ListNode` to make subsequent
+    methods more DRY.
+    """
+
+    def delete(self):
+        if self.prev:
+            self.prev.next = self.next
+        if self.next:
+            self.next.prev = self.prev
+
+    # $%$End
+
 
 """
 Our doubly-linked list class. It holds references to 
@@ -32,39 +46,18 @@ class DoublyLinkedList:
     the old head node's previous pointer accordingly.
     """
 
-    # def add_to_head(self, value):
-    #     # create instance of ListNode with value
-    #     # node = ListNode(value)
-    #     if not self.head:
-    #         node = ListNode(value)
-    #         self.head = node
-    #         self.tail = node
-    #         self.length = 1
-    #     elif self.head == self.tail:
-    #         old_head = self.head
-    #         # new_node = ListNode(value, prev=None, next=old_head)
-    #         # old_head.prev = new_node
-
-    #         self.head = ListNode(value, prev=None, next=old_head)
-    #         old_head.prev = self.head
-    #         self.tail = old_head
-    #         self.length += 1
-    #     else:
-    #         old_head = self.head
-    #         self.head = ListNode(value, prev=None, next=self.head)
-    #         old_head.prev = self.head
-    #         self.length += 1
-
     def add_to_head(self, value):
-        new_head = ListNode(value=value, next=self.head)
-        if self.head == None:
-            self.head = new_head
-            self.tail = new_head
-            self.length += 1
-            return None
-        self.head.prev = new_head
-        self.head = new_head
+        # $%$Start
+        new_node = ListNode(value, None, None)
         self.length += 1
+        if not self.head and not self.tail:
+            self.head = new_node
+            self.tail = new_node
+        else:
+            new_node.next = self.head
+            self.head.prev = new_node
+            self.head = new_node
+        # $%$End
 
     """
     Removes the List's current head node, making the
@@ -73,21 +66,11 @@ class DoublyLinkedList:
     """
 
     def remove_from_head(self):
-        if not self.head:
-            return "Error: DDL is currently empty."
-
-        if not self.head.next:
-            head = self.head
-            self.head = None
-            self.tail = None
-            self.length -= 1
-
-            return head.value
-
+        # $%$Start
         value = self.head.value
-        self.head = self.head.next
-        self.length -= 1
+        self.delete(self.head)
         return value
+        # $%$End
 
     """
     Wraps the given value in a ListNode and inserts it 
@@ -96,17 +79,17 @@ class DoublyLinkedList:
     """
 
     def add_to_tail(self, value):
-        if not self.tail:
-            node = ListNode(value)
-            self.head = node
-            self.tail = node
-            self.length += 1
+        # $%$Start
+        new_node = ListNode(value, None, None)
+        self.length += 1
+        if not self.tail and not self.head:
+            self.tail = new_node
+            self.head = new_node
         else:
-            old_tail = self.tail
-            new_tail = ListNode(value, old_tail)
-            self.tail = new_tail
-            old_tail.next = new_tail
-            self.length += 1
+            new_node.prev = self.tail
+            self.tail.next = new_node
+            self.tail = new_node
+        # $%$End
 
     """
     Removes the List's current tail node, making the 
@@ -115,21 +98,11 @@ class DoublyLinkedList:
     """
 
     def remove_from_tail(self):
-        if not self.tail:
-            return "Error: DDL empty. Tail does not exist."
-        if self.head == self.tail:
-            value = self.tail.value
-            self.head = None
-            self.tail = None
-            self.length = 0
-            return value
-        else:
-            value = self.tail.value
-            new_tail = self.tail.prev
-            new_tail.next = None
-            self.tail = new_tail
-            self.length -= 1
-            return value
+        # $%$Start
+        value = self.tail.value
+        self.delete(self.tail)
+        return value
+        # $%$End
 
     """
     Removes the input node from its current spot in the 
@@ -137,35 +110,17 @@ class DoublyLinkedList:
     """
 
     def move_to_front(self, node):
-        if self.head == self.tail:
-            return "Error: Only one nodes exists in current list."
-        elif node == self.tail:
-            # old head being replaced:
-            old_head = self.head
-
-            # new tail:
-            new_tail = self.tail.prev
-            self.tail = new_tail
-            self.tail.next = None
-
-            # update old head pointer:
-            old_head.prev = node
-
-            # make new head:
-            node.prev, node.next = None, old_head
-            self.head = node
+        # $%$Start
+        if node is self.head:
+            return
+        value = node.value
+        if node is self.tail:
+            self.remove_from_tail()
         else:
-            # update pointers of nodes from both side of 'moving node' to now point at
-            # each other
-            node.prev.next, node.next.prev = node.next, node.prev
-
-            # updates pointers of old head being replaced:
-            old_head = self.head
-            old_head.prev = node
-
-            # node being moved; updates pointers; assigns as new head
-            node.prev, node.next = None, old_head
-            self.head = node
+            node.delete()
+            self.length -= 1
+        self.add_to_head(value)
+        # $%$End
 
     """
     Removes the input node from its current spot in the 
@@ -173,86 +128,45 @@ class DoublyLinkedList:
     """
 
     def move_to_end(self, node):
-        if self.head == self.tail:
-            return "Error: Only one node exists in list."
-        elif node == self.head:
-            # old tail being replaced:
-            old_tail = self.tail
-
-            # new head:
-            new_head = self.head.next
-            self.head = new_head
-            self.head.prev = None
-
-            # update old tail pointer:
-            old_tail.next = node
-
-            # make a new tail:
-            node.prev, node.next = old_tail, None
-            self.tail = node
+        # $%$Start
+        if node is self.tail:
+            return
+        value = node.value
+        if node is self.head:
+            self.remove_from_head()
+            self.add_to_tail(value)
         else:
-            # update pointers of nodes from both side of 'moving node' to now point at
-            # each other
-            node.prev.next, node.next.prev = node.next, node.prev
-
-            # update pointers of old tail being replaced:
-            old_tail = self.tail
-            old_tail.next = node
-
-            # node being moved; updates pointers; assigns as new head
-            node.prev, node.next = old_tail, None
-            self.tail = node
-
-    """
-    Deletes the input node from the List, preserving the 
-    order of the other elements of the List.
-    """
+            node.delete()
+            self.length -= 1
+            self.add_to_tail(value)
+        # $%$End
 
     def delete(self, node):
-        if len(self) == 1:
+        # $%$Start
+        self.length -= 1
+        if not self.head and not self.tail:
+            return
+        if self.head == self.tail:
             self.head = None
             self.tail = None
-            self.length = 0
-        elif len(self) == 2:
-            if node == self.head:
-                new_head = self.tail
-                # new_head.prev = None
-                new_head.next, new_head.prev = None, None
-                self.head = new_head
-                self.tail = new_head
-            elif node == self.tail:
-                new_tail = self.head
-                new_tail.next = None
-                self.tail = new_tail
-                self.head = new_tail
-            self.length -= 1
-
+        elif self.head == node:
+            self.head = node.next
+            node.delete()
+        elif self.tail == node:
+            self.tail = node.prev
+            node.delete()
         else:
-            if node == self.head:
-                new_head = self.head.next
-                new_head.prev = None
-                self.head = new_head
-            elif node == self.tail:
-                new_tail = self.tail.prev
-                new_tail.next = None
-                self.tail = new_tail
-            else:
-                # change pointers of nodes from both sides of the node being deleted, to now
-                # point at each other, removing all reference of deleted node.
-                node.prev.next, node.next.prev = node.next, node.prev
-            self.length -= 1
-
-    """
-    Finds and returns the maximum value of all the nodes 
-    in the List.
-    """
+            node.delete()
+        # $%$End
 
     def get_max(self):
-        current_node = self.head
-        values = []
-
-        while current_node is not None:
-            values.append(current_node.value)
-
-            current_node = current_node.next
-        return max(values)
+        # $%$Start
+        if not self.head:
+            return None
+        max_val = self.head.value
+        current = self.head
+        while current:
+            if current.value > max_val:
+                max_val = current.value
+            current = current.next
+        return max_val
